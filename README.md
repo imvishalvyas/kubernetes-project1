@@ -4,7 +4,7 @@ This project demonstrates a simple **3-tier application** (Database, Backend, Fr
 It is designed for testing purposes.
 
 ## 📂 Project Structure
-
+```
 ├── backend
 │   └── Dockerfile
 ├── frontend
@@ -22,6 +22,7 @@ It is designed for testing purposes.
 │   ├── postgres-service.yaml
 │   └── pvc.yaml
 └── README.md
+```
 
 # 1. Kubernetes Manifests (in k8s/)
 
