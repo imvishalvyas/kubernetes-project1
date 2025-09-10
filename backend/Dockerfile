@@ -1,16 +1,21 @@
-# backend/Dockerfile
-FROM openjdk:8-jdk-alpine
+# Start from Tomcat with JDK 8
+FROM tomcat:9.0-jdk8-temurin
 
-# Set working directory
-WORKDIR /app
+# Install git and maven to build the app
+RUN apt-get update && apt-get install -y git maven && rm -rf /var/lib/apt/lists/*
 
-# Clone the repo (or COPY if you already have code locally)
-RUN apk add --no-cache git maven \
-    && git clone https://github.com/shephertz/App42PaaS-Java-PostgreSQL-Sample.git . \
+WORKDIR /build
+
+# Clone the project and build a WAR file
+RUN git clone https://github.com/shephertz/App42PaaS-Java-PostgreSQL-Sample.git . \
     && mvn clean package -DskipTests
 
-# Expose backend port
+# Remove default apps and deploy our WAR
+RUN rm -rf /usr/local/tomcat/webapps/* \
+    && cp target/*.war /usr/local/tomcat/webapps/ROOT.war
+
+# Expose Tomcat default port
 EXPOSE 8080
 
-# Run the app (adjust JAR path if needed)
-CMD ["java", "-jar", "target/App42PaaS-Java-PostgreSQL-Sample-0.1-SNAPSHOT.jar"]
+# Launch Tomcat
+CMD ["catalina.sh", "run"]
